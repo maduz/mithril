@@ -7,6 +7,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import model.Config;
+import model.GenericTimeTable;
 //import model.NewTimeTable;
 import model.TimeTable;
 
@@ -18,7 +19,7 @@ public class FileChoicePanel extends TimeTablePanel implements DocumentListener 
 	 */
 	private static final long serialVersionUID = -795220467586932378L;
 	private FileChoiceTrio courseDetailsPanel = new FileChoiceTrio("Course details file ", SwingConstants.CENTER, 40, this);
-	private FileChoiceTrio studentDetailsPanel = new FileChoiceTrio("Student details file ", SwingConstants.CENTER, 40, this);
+	//private FileChoiceTrio studentDetailsPanel = new FileChoiceTrio("Student details file ", SwingConstants.CENTER, 40, this);
 	private FileChoiceTrio instructorDatePanel = new FileChoiceTrio("Instructor-date availability file", SwingConstants.CENTER, 40, this);
 	private FileChoiceTrio courseSessionPanel = new FileChoiceTrio("Course-session preference file", SwingConstants.CENTER, 40, this);
 	private FileChoiceTrio courseRoomPanel = new FileChoiceTrio("Course-classroom preference file", SwingConstants.CENTER, 40, this);
@@ -56,7 +57,7 @@ public class FileChoicePanel extends TimeTablePanel implements DocumentListener 
 	
 	public void handleNext() {
 		try {
-			TimeTable timeTable = new TimeTable(courseDetailsPanel.getFileName(), studentDetailsPanel.getFileName(), config.getRoomsPerSession(), config.getSessionsPerDay());
+			TimeTable timeTable = new GenericTimeTable(config);
 //			NewTimeTable timeTable = new NewTimeTable(courseDetailsPanel.getFileName(), studentDetailsPanel.getFileName(), config.getRoomsPerSession(), config.getSessionsPerDay());
 			//NewTimeTable timeTable = new NewTimeTable(courseDetailsPanel.getFileName(), null, config.getRoomsPerSession(), config.getSessionsPerDay(), config.getStartDate(), config.getEndDate());
 			TimeTablePanel timeTableEntryPanel = PanelsFactory.getFactory(getParent()).getNextPanel(timeTable);

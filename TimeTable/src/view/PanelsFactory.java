@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import model.Config;
+import model.RuleBasedTimeTable;
 import model.TimeTable;
 import model.TimeTableDay;
 
@@ -30,42 +31,56 @@ public class PanelsFactory {
 	}
 	
 	public TimeTablePanel getNextPanel(Object context) {
-		if((panels.size() > currentState.ordinal()) && (!panels.isEmpty())) {
-			TimeTablePanel panel = panels.get(currentState.ordinal());
-			currentState = panel.getState();
-			
-			return panel;
-		}
-		
 		TimeTablePanel panel = null;
-		switch(currentState){
-		case Uninititalized :
-			panel = new IntroPanel(parent);
-			break;
-		case Intro:
-			panel = new CourseInfoDialog(parent);
-			break;
-		case CourseInfo:
-			Config config = (Config) context;
-			panel = new FileChoicePanel(parent, config);
-			break;
-		case FileChoice:
-//			Iterator<TimeTableDay> timeTableIterator = (Iterator<TimeTableDay>) context;
-//			panel = new TimeTableEntryPanel(timeTableIterator, parent);
-			TimeTable timeTable = (TimeTable) context;
-			panel = new TimeTableEntryPanel(timeTable, parent);
-//			panel = new TimeTableScrollPanel(timeTable, parent);
-			break;
-		case TimeTableEntry:
-			List<TimeTableDay> timeTableEntries = (List<TimeTableDay>) context;
-			System.out.println("Getting Finish Panel: " + timeTableEntries.size());
-			panel = new FinishPanel(parent, timeTableEntries);
-			break;
-		}
-		
-		if(panel != null) {
-			currentState = panel.getState();
-			panels.add(panel);
+
+		try {
+			if((panels.size() > currentState.ordinal()) && (!panels.isEmpty())) {
+				panel = panels.get(currentState.ordinal());
+				currentState = panel.getState();
+				
+				return panel;
+			}
+			
+			switch(currentState){
+			case Uninititalized :
+				panel = new IntroPanel(parent);
+				break;
+			
+			case Intro:
+				panel = new CourseInfoDialog(parent);
+				break;
+
+			case CourseInfo: {
+					Config config = (Config) context;
+					
+					panel = new InstructorAvailabilityPanel(config, 10, parent);
+					break;
+			}
+				
+			case InstructorAvailabilityInfo: {
+					Config config = (Config) context;
+					
+					TimeTable timeTable;
+					timeTable = new RuleBasedTimeTable(config);
+					
+					panel = new TimeTableEntryPanel(timeTable, parent);
+					break;
+			}
+
+			case TimeTableEntry:
+				List<TimeTableDay> timeTableEntries = (List<TimeTableDay>) context;
+				System.out.println("Getting Finish Panel: " + timeTableEntries.size());
+				panel = new FinishPanel(parent, timeTableEntries);
+				break;
+			}
+			
+			if(panel != null) {
+				currentState = panel.getState();
+				panels.add(panel);
+			}
+		}  catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return panel;

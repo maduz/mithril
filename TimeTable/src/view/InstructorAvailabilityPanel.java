@@ -21,14 +21,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import view.TimeTableApp.AppStates;
+
+import model.Config;
+import model.GenericTimeTable;
 import model.StringPadder;
+import model.TimeTable;
 
 
 /**
  * @author Akshay
  *
  */
-public class InstructorAvailabilityPanel extends JPanel { //extends TimeTablePanel {
+public class InstructorAvailabilityPanel extends TimeTablePanel {
 
 	/**
 	 * 
@@ -40,6 +45,7 @@ public class InstructorAvailabilityPanel extends JPanel { //extends TimeTablePan
 	private boolean iDays[][];
 	private Calendar startDate, endDate;
 	private List<String> instructorList;
+	private Config config;
 	
 	ItemListener listener = new ItemListener() {
 		
@@ -60,10 +66,26 @@ public class InstructorAvailabilityPanel extends JPanel { //extends TimeTablePan
 		}
 	};
 	
+	public InstructorAvailabilityPanel(Config runConfig, int instructorsCount, TimeTableApp parent) {
+		super(parent, AppStates.InstructorAvailabilityInfo);
+		this.config = runConfig;
+		
+		List<String> ins = new ArrayList<String>();
+		for(int i = 1; i <= instructorsCount; i++) {
+			ins.add("Instructor " + i);
+		}
+		
+		Init(runConfig.getStartDate(), runConfig.getEndDate(), ins, parent);
+	}
+	
 	public InstructorAvailabilityPanel(Date sDate, Date eDate, List<String> instructors, TimeTableApp parent) {
-		//super(parent, AppStates.InstructorDays);
+		super(parent, AppStates.InstructorAvailabilityInfo);
 		// TODO Auto-generated constructor stub
 		
+		Init(sDate, eDate, instructors, parent);
+	}
+	
+	private void Init(Date sDate, Date eDate, List<String> instructors, TimeTableApp parent) {
 		this.startDate = Calendar.getInstance();
 		this.startDate.setTime(sDate);
 		this.endDate = Calendar.getInstance();
@@ -138,11 +160,13 @@ public class InstructorAvailabilityPanel extends JPanel { //extends TimeTablePan
 	}
 	
 	public void handleNext() {
-		
+		TimeTablePanel timeTableEntryPanel = PanelsFactory.getFactory(getParent()).getNextPanel(config);
+		getParent().setPanel(timeTableEntryPanel);
 	}
 	
 	public void handleBack() {
-		
+		TimeTablePanel previous = PanelsFactory.getFactory(getParent()).getPreviousPanel();
+		getParent().setPanel(previous);
 	}
 	
 	public static void main(String[] args) {
