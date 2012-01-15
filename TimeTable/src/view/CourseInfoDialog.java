@@ -6,14 +6,17 @@ import java.util.Date;
 
 import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
+import javax.swing.SwingConstants;
 import javax.swing.JSpinner.DateEditor;
 import javax.swing.SpinnerDateModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import model.Config;
 
 import view.TimeTableApp.AppStates;
 
-public class CourseInfoDialog extends TimeTablePanel {
+public class CourseInfoDialog extends TimeTablePanel implements DocumentListener {
 	/**
 	 * 
 	 */
@@ -23,6 +26,10 @@ public class CourseInfoDialog extends TimeTablePanel {
 	
 	ConfigurablePanel startDateInfo = new DateConfigEntries("Start date for time table", null);
 	ConfigurablePanel endDateInfo = new DateConfigEntries("End date for time table", null);
+	ConfigurablePanel courseInfo = new FileChoiceTrio("Course details file ", SwingConstants.CENTER, 40, this);
+	
+	private boolean nextEnabled = false;
+	private Config config;
 
 	public CourseInfoDialog(TimeTableApp parent) {
 		super(parent, AppStates.CourseInfo);
@@ -42,6 +49,8 @@ public class CourseInfoDialog extends TimeTablePanel {
 		this.add(startDateInfo);
 		
 		this.add(endDateInfo);
+		
+		this.add(courseInfo);
 		
 		{
 			ConfigurablePanel temp = new ConfigEntries("", 0);
@@ -63,17 +72,17 @@ public class CourseInfoDialog extends TimeTablePanel {
 			Date start, end;
 			start = (Date) startDateInfo.getValue();
 			end = (Date) endDateInfo.getValue();
-//			System.out.println("start: " + start + "\nend: " + end);
+
 			if(end.before(start)) {
 				//throw an error
 				JOptionPane.showMessageDialog(this.getParent(), "End-date cannot exist before Start-date", "Error: Date Choice", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			
 			config.setStartDate(start);
 			config.setEndDate(end);
-
-//			System.out.println("Start: " + config.getStartDate());
-//			System.out.println("End: " + config.getEndDate());
+			
+			config.setCourseDetailsFile((String)courseInfo.getValue());
 
 			TimeTablePanel nextPanel = PanelsFactory.getFactory(getParent()).getNextPanel(config);
 			getParent().setPanel(nextPanel);
@@ -86,5 +95,35 @@ public class CourseInfoDialog extends TimeTablePanel {
 	public void handleBack() {
 		TimeTablePanel intro = PanelsFactory.getFactory(getParent()).getPreviousPanel();
 		getParent().setPanel(intro);
+	}
+	
+	public boolean canProceed() {
+		if(courseInfo.getValue().toString().isEmpty())
+			return false;
+		
+		return true;
+	}
+	
+	@Override
+	public void changedUpdate(DocumentEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void insertUpdate(DocumentEvent e) {
+		if(canProceed() && !nextEnabled) {
+			getParent().setPanel(this);
+			nextEnabled = true;
+		}
+	}
+
+	@Override
+	public void removeUpdate(DocumentEvent e) {
+		if(!canProceed() && nextEnabled) {
+			getParent().setPanel(this);
+			nextEnabled = false;
+		}
+		
 	}
 }

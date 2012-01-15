@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentListener;
 
-public class FileChoiceTrio extends JPanel {// implements ActionListener {
+public class FileChoiceTrio extends ConfigurablePanel {// implements ActionListener {
 	/**
 	 * 
 	 */
@@ -102,6 +102,11 @@ public class FileChoiceTrio extends JPanel {// implements ActionListener {
 	
 	public String getFileName() {
 		return file.getText();
+	}
+	
+	@Override
+	public Object getValue() {
+		return getFileName();
 	}
 
 }
