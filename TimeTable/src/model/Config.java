@@ -7,6 +7,8 @@ public class Config {
 	private int sessionsPerDay;
 	private Date startDate;
 	private Date endDate;
+	private String courseDetailsFile;
+	private String studentDetailsFile;
 	
 	public int getRoomsPerSession() {
 		return roomsPerSession;
@@ -43,5 +45,17 @@ public class Config {
 	 */
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+	public String getCourseDetailsFile() {
+		return courseDetailsFile;
+	}
+	public void setCourseDetailsFile(String courseDetailsFile) {
+		this.courseDetailsFile = courseDetailsFile;
+	}
+	public String getStudentDetailsFile() {
+		return studentDetailsFile;
+	}
+	public void setStudentDetailsFile(String studentDetailsFile) {
+		this.studentDetailsFile = studentDetailsFile;
 	}
 }
