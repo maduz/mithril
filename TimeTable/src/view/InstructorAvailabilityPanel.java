@@ -108,7 +108,8 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 		GridLayout layout = new GridLayout(rows, cols);
 		mainPanel = new JPanel(layout);
 		makeGrid();
-		JScrollPane scrollPane = new JScrollPane(mainPanel);
+		JScrollPane scrollPane = new JScrollPane(mainPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setPreferredSize(new Dimension(400, 400));
 		this.add(scrollPane);
 	}
 	
