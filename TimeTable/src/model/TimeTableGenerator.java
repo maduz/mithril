@@ -72,6 +72,8 @@ public class TimeTableGenerator {
 	 * @throws Throwable
 	 */
 	private void readCourseData(String courseFileName) throws Throwable {
+		if(courseFileName == null || courseFileName.isEmpty()) return;
+		
 		String[] record;
 		CSVFileReader inputFileReader = new CSVFileReader(courseFileName);
 		
@@ -184,6 +186,8 @@ public class TimeTableGenerator {
 	 * @throws Throwable
 	 */
     private void readCourseStudentData(String courseStudentFileName) throws Throwable {
+    	
+    	if(courseStudentFileName == null || courseStudentFileName.isEmpty()) return;
 
     	String[] record;
     	CSVFileReader inputFileReader = new CSVFileReader(courseStudentFileName, true);
