@@ -24,10 +24,17 @@ public class TimeTableIterator implements Iterator<TimeTableDay>{
 	 * @param saName Student Course Allocation details file name
 	 * @throws Throwable 
 	 */
-	public TimeTableIterator(String cfName, String saName, int rooms, int sessions) throws Throwable {
+//	public TimeTableIterator(String cfName, String saName, int rooms, int sessions) throws Throwable {
+//		numRooms = rooms;
+//		numSessions = sessions;
+//		timetableGenerator.createTimeTable(cfName, saName);
+//		day = 1;
+//	}
+	
+	public TimeTableIterator(CourseFileReader reader, String saName, int rooms, int sessions) throws Throwable {
 		numRooms = rooms;
 		numSessions = sessions;
-		timetableGenerator.createTimeTable(cfName, saName);
+		timetableGenerator.createTimeTable(reader, saName);
 		day = 1;
 	}
 	

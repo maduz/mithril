@@ -4,6 +4,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
@@ -20,11 +21,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import view.TimeTableApp.AppStates;
 
 import model.Config;
-import model.GenericTimeTable;
+import model.CourseFileReader;
 import model.StringPadder;
 import model.TimeTable;
 
@@ -70,10 +72,14 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 		super(parent, AppStates.InstructorAvailabilityInfo);
 		this.config = runConfig;
 		
-		List<String> ins = new ArrayList<String>();
-		for(int i = 1; i <= instructorsCount; i++) {
-			ins.add("Instructor " + i);
-		}
+		CourseFileReader reader = config.getCourseFileReader();
+		
+		List<String> ins = reader.getInstructorList();
+		
+//		List<String> ins = new ArrayList<String>();
+//		for(int i = 1; i <= instructorsCount; i++) {
+//			ins.add("Instructor " + i);
+//		}
 		
 		Init(runConfig.getStartDate(), runConfig.getEndDate(), ins, parent);
 	}
@@ -108,7 +114,8 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 		GridLayout layout = new GridLayout(rows, cols);
 		mainPanel = new JPanel(layout);
 		makeGrid();
-		JScrollPane scrollPane = new JScrollPane(mainPanel);
+		JScrollPane scrollPane = new JScrollPane(mainPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setPreferredSize(new Dimension(450, 390));
 		this.add(scrollPane);
 	}
 	
@@ -150,13 +157,16 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 	}
 
 	private void makeHeaderRow() {
+		//JPanel headerPanel = new JPanel(new GridLayout(1, cols));
 		Calendar cal = (Calendar) startDate.clone();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		mainPanel.add(new JLabel(StringPadder.padString(" ", 20)));
 		for(int i = 1; i < cols; i++) {
 			JLabel label = new JLabel(StringPadder.padString("" + sdf.format(cal.getTime()), 20));
+			cal.add(Calendar.DATE, 1);
 			mainPanel.add(label);
 		}
+		this.add(mainPanel);
 	}
 	
 	public void handleNext() {
