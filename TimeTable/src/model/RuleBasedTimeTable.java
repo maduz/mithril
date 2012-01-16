@@ -24,7 +24,7 @@ public class RuleBasedTimeTable implements TimeTable {
 	public RuleBasedTimeTable(Config runConfig) throws Throwable {
 		numRooms = runConfig.getRoomsPerSession();
 		numSessions = runConfig.getSessionsPerDay();
-		timetableGenerator.createTimeTable(runConfig.getCourseDetailsFile(), runConfig.getStudentDetailsFile());
+		timetableGenerator.createTimeTable(runConfig.getCourseFileReader(), runConfig.getStudentDetailsFile());
 		
 		day = 0;
 		while(continueCreating) getTimeTable(day++);

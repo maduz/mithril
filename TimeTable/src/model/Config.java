@@ -9,6 +9,7 @@ public class Config {
 	private Date endDate;
 	private String courseDetailsFile;
 	private String studentDetailsFile;
+	private CourseFileReader courseFileReader;
 	
 	public int getRoomsPerSession() {
 		return roomsPerSession;
@@ -57,5 +58,13 @@ public class Config {
 	}
 	public void setStudentDetailsFile(String studentDetailsFile) {
 		this.studentDetailsFile = studentDetailsFile;
+	}
+	
+	public void setCourseFileReader(CourseFileReader reader) {
+		courseFileReader = reader;
+	}
+	
+	public CourseFileReader getCourseFileReader() {
+		return courseFileReader;
 	}
 }
