@@ -4,6 +4,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
@@ -12,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -20,13 +22,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import view.TimeTableApp.AppStates;
 
 import model.Config;
+import model.CourseDetails;
 import model.GenericTimeTable;
 import model.StringPadder;
 import model.TimeTable;
+import model.TimeTableCourse;
 
 
 /**
@@ -66,13 +71,18 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 		}
 	};
 	
-	public InstructorAvailabilityPanel(Config runConfig, int instructorsCount, TimeTableApp parent) {
+	public InstructorAvailabilityPanel (Config runConfig, int instructorsCount, TimeTableApp parent) throws Throwable {
 		super(parent, AppStates.InstructorAvailabilityInfo);
 		this.config = runConfig;
 		
+		CourseDetails courseDetails = CourseDetails.getCourseDetails(runConfig.getCourseDetailsFile());
+		if(courseDetails == null) throw new Exception("Invalid course details file");
+		
 		List<String> ins = new ArrayList<String>();
-		for(int i = 1; i <= instructorsCount; i++) {
-			ins.add("Instructor " + i);
+		Iterator<TimeTableCourse> coursesIterator = courseDetails.getCourses();
+		while(coursesIterator.hasNext()) {
+			TimeTableCourse course = coursesIterator.next();
+			ins.add(course.getInstructorName());
 		}
 		
 		Init(runConfig.getStartDate(), runConfig.getEndDate(), ins, parent);
@@ -156,6 +166,7 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 		mainPanel.add(new JLabel(StringPadder.padString(" ", 20)));
 		for(int i = 1; i < cols; i++) {
 			JLabel label = new JLabel(StringPadder.padString("" + sdf.format(cal.getTime()), 20));
+			cal.add(Calendar.DATE, 1);
 			mainPanel.add(label);
 		}
 	}
