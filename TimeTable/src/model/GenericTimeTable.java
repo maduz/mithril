@@ -11,7 +11,7 @@ import java.util.List;
  * @author Akshay
  *
  */
-public class GenericTimeTable implements TimeTable {
+public class GenericTimeTable extends TimeTable {
 	//TimeTableIterator iterator;// = new TimeTableIterator(cfName, saName, rooms, sessions)
 	private int numRooms;
 	private int numSessions;
