@@ -9,6 +9,7 @@ public class Config {
 	private Date endDate;
 	private String courseDetailsFile;
 	private String studentDetailsFile;
+	private boolean[][] dayPreferences;
 	
 	public int getRoomsPerSession() {
 		return roomsPerSession;
@@ -57,5 +58,26 @@ public class Config {
 	}
 	public void setStudentDetailsFile(String studentDetailsFile) {
 		this.studentDetailsFile = studentDetailsFile;
+	}
+	public boolean[][] getDayPreferences() {
+		return dayPreferences;
+	}
+	public void setDayPreferences(boolean[][] dayPreferences) {
+		this.dayPreferences = dayPreferences;
+	}
+	
+	public CourseFileReader getCourseFileReader() {
+		try {
+			return new CourseFileReader(getCourseDetailsFile());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	public void setCourseFileReader(CourseFileReader courseFileReader) {
+		// TODO Auto-generated method stub
+		
 	}
 }
