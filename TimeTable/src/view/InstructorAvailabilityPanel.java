@@ -9,6 +9,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,6 +31,7 @@ import view.TimeTableApp.AppStates;
 import model.Config;
 import model.CourseDetails;
 import model.GenericTimeTable;
+
 import model.StringPadder;
 import model.TimeTable;
 import model.TimeTableCourse;
@@ -71,6 +74,25 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 		}
 	};
 	
+	MouseAdapter mouseListener = new MouseAdapter() {
+		@Override
+        public void mouseClicked(MouseEvent me) {
+            JCheckBox box = (JCheckBox) me.getSource();
+            if(box.isSelected())
+            	box.setSelected(false);
+            else
+            	box.setSelected(true);
+            
+            String id = box.getName();
+            String[] pos = id.split(":");
+			int row = Integer.parseInt(pos[0]);
+			int col = Integer.parseInt(pos[1]);
+			System.out.println("row: " + row + ", col: " + col +"\niDays (prev): " + iDays[row][col]
+					+"\niDays (new): " + !iDays[row][col]);
+			iDays[row][col] = !iDays[row][col];
+        }
+	};
+	
 	public InstructorAvailabilityPanel (Config runConfig, int instructorsCount, TimeTableApp parent) throws Throwable {
 		super(parent, AppStates.InstructorAvailabilityInfo);
 		this.config = runConfig;
@@ -84,7 +106,6 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 			TimeTableCourse course = coursesIterator.next();
 			ins.add(course.getInstructorName());
 		}
-		
 		Init(runConfig.getStartDate(), runConfig.getEndDate(), ins, parent);
 	}
 	
@@ -119,7 +140,7 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 		mainPanel = new JPanel(layout);
 		makeGrid();
 		JScrollPane scrollPane = new JScrollPane(mainPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setPreferredSize(new Dimension(400, 400));
+		scrollPane.setPreferredSize(new Dimension(450, 390));
 		this.add(scrollPane);
 	}
 	
@@ -144,8 +165,10 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 		if(row%2 == 0) label.setBackground(Color.GRAY);
 		else label.setBackground(Color.WHITE);
 		mainPanel.add(label);
+		
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		for(int i = 1; i < cols; i++) {
-			JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+			
 			panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 			if(row%2 == 0) panel.setBackground(Color.GRAY);
 			else panel.setBackground(Color.WHITE);
@@ -155,12 +178,16 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 			cboxes[row-1][i-1].setSelected(true);
 			cboxes[row-1][i-1].setName((row-1)+":"+(i-1));
 			cboxes[row-1][i-1].addItemListener(listener);
+			cboxes[row-1][i-1].addMouseListener(mouseListener);
 			panel.add(cboxes[row-1][i-1]);
-			mainPanel.add(panel);
+			
 		}
+		
+		mainPanel.add(panel);
 	}
 
 	private void makeHeaderRow() {
+		//JPanel headerPanel = new JPanel(new GridLayout(1, cols));
 		Calendar cal = (Calendar) startDate.clone();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		mainPanel.add(new JLabel(StringPadder.padString(" ", 20)));
@@ -169,9 +196,12 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 			cal.add(Calendar.DATE, 1);
 			mainPanel.add(label);
 		}
+		this.add(mainPanel);
 	}
 	
 	public void handleNext() {
+		config.setDayPreferences(iDays);
+		
 		TimeTablePanel timeTableEntryPanel = PanelsFactory.getFactory(getParent()).getNextPanel(config);
 		getParent().setPanel(timeTableEntryPanel);
 	}
