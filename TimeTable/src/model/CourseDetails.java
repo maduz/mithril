@@ -91,4 +91,8 @@ public class CourseDetails {
 	public Iterator<TimeTableCourse> getCourses() {
 		return courseMap.values().iterator();
 	}
+	
+	public TimeTableCourse[] getCoursesAsArray() {
+		return courseMap.values().toArray(new TimeTableCourse[0]);
+	}
 }

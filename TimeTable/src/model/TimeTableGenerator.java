@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -68,34 +69,18 @@ public class TimeTableGenerator {
 	 * 2. Course Name
 	 * 3. Instructor Name
 	 * 4. Required Sessions
-	 * @param courseFileName a CSV file where course information is stored
+	 * @param reader a CSV file where course information is stored
 	 * @throws Throwable
 	 */
-	private void readCourseData(String courseFileName) throws Throwable {
-		if(courseFileName == null || courseFileName.isEmpty()) return;
+	private void readCourseData(CourseFileReader reader) throws Throwable {
 		
-		String[] record;
-		CSVFileReader inputFileReader = new CSVFileReader(courseFileName);
-		
-		//The input file is expected to have the following information in the order indicated below
-		int COURSE_NAME_INDEX = 1;
-		int COURSE_NUMBER_INDEX = 0;
-		int COURSE_INSTRUCTOR_INDEX = 2;
-		int COURSE_SESSIONS_INDEX = 3;
-		
-		numCourses = 0;
-
-		//read data from file and create a map of course-instructor and course-sessions
-		while((record = inputFileReader.getNextRecord()) != null) {
-			TimeTableCourse course = new TimeTableCourse(numCourses, Integer.parseInt(record[COURSE_NUMBER_INDEX]), record[COURSE_NAME_INDEX], record[COURSE_INSTRUCTOR_INDEX], Integer.parseInt(record[COURSE_SESSIONS_INDEX]));
-//			courseInstructorMap.put(numCourses, course.getInstructorName());
-//			coursesSessionsMap.put(numCourses, course.getSessionsRequired());
+		for (Iterator<TimeTableCourse> iterator = reader.getCourseList().iterator(); iterator.hasNext();) {
+			TimeTableCourse course = (TimeTableCourse) iterator.next();
 			courseMap.put(course.getCourseNumber(), course);
 			courseIndexNumberMap.put(course.getCourseIndex(), course.getCourseNumber());
-			numCourses++;
 		}
 		
-		
+		numCourses = reader.getNumberOfCourses();
 		sessionsRequirement = new int[numCourses];
 		courseOrder = new Integer[numCourses];
 		inverseCourseOrder = new Integer[numCourses];
@@ -112,11 +97,10 @@ public class TimeTableGenerator {
 		courseConflictMatrix = new int[numCourses][numCourses];
 		for(int i = 0; i < numCourses; i++)
 			for(int j = i; j < numCourses; j++)
-				if(i==j)
+				if(i==j) {
 					courseConflictMatrix[i][j] = 1;
-				else
 					courseConflictMatrix[i][j] = courseConflictMatrix[j][i] = 0;
-
+				}
 		
 //		Integer[] allCourses = (Integer[]) courseInstructorMap.keySet().toArray(new Integer[numCourses]);
 		
@@ -133,8 +117,6 @@ public class TimeTableGenerator {
 				}
 			}
 		}
-		
-		inputFileReader.close();
 		
 		return;
 	}
@@ -334,9 +316,9 @@ public class TimeTableGenerator {
      * @param saName file that contains student course allocation details
      * @throws Throwable
      */
-    public void createTimeTable(String cfName, String saName) throws Throwable {
+    public void createTimeTable(CourseFileReader reader, String saName) throws Throwable {
 		//read input data and exit if exceptions are raised
-		readCourseData(cfName);
+		readCourseData(reader);
 		readCourseStudentData(saName);
 
 		//PROCEED WITH THE REST OF THE ALGORITHM
