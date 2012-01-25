@@ -125,7 +125,7 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 		
 		Calendar dayCounter = (Calendar) endDate.clone();
 		cols = 1;
-		while(dayCounter.after(startDate)) {
+		while(!dayCounter.before(startDate)) {
 			cols++;
 			dayCounter.add(Calendar.DATE, -1);
 		}
@@ -166,9 +166,9 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 		else label.setBackground(Color.WHITE);
 		mainPanel.add(label);
 		
-		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		
 		for(int i = 1; i < cols; i++) {
-			
+			JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 			panel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
 			if(row%2 == 0) panel.setBackground(Color.GRAY);
 			else panel.setBackground(Color.WHITE);
@@ -177,13 +177,12 @@ public class InstructorAvailabilityPanel extends TimeTablePanel {
 			else cboxes[row-1][i-1].setBackground(Color.WHITE);
 			cboxes[row-1][i-1].setSelected(true);
 			cboxes[row-1][i-1].setName((row-1)+":"+(i-1));
-			cboxes[row-1][i-1].addItemListener(listener);
+			//cboxes[row-1][i-1].addItemListener(listener);
 			cboxes[row-1][i-1].addMouseListener(mouseListener);
 			panel.add(cboxes[row-1][i-1]);
-			
+			mainPanel.add(panel);
 		}
 		
-		mainPanel.add(panel);
 	}
 
 	private void makeHeaderRow() {

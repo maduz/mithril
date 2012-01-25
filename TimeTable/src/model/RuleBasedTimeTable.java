@@ -90,11 +90,17 @@ public class RuleBasedTimeTable extends TimeTable implements Iterator<TimeTableD
 			Random random = new Random();
 			while(day.getSessions().size() < numSessions) {
 				TimeTableSession session = new TimeTableSession(numRooms);
+				List<TimeTableCourse> coursesToSchedule = new ArrayList<TimeTableCourse>();
+				coursesToSchedule.addAll(candidateCourses);
 				
 				int room = 0;
 				while(room < numRooms) {
 					try {
-						session.addCourse(candidateCourses.get(random.nextInt(candidateCourses.size())), room);
+						int courseIdToSchedule = random.nextInt(coursesToSchedule.size());
+						session.addCourse(coursesToSchedule.get(courseIdToSchedule), room);
+						
+						coursesToSchedule.remove(courseIdToSchedule);
+						if(coursesToSchedule.isEmpty()) break;
 					} catch (TimeTableSessionException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

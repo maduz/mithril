@@ -26,9 +26,9 @@ public class TimeTableApp extends JFrame {
 		Intro,
 		CourseInfo,
 		InstructorAvailabilityInfo,
-		FileChoice,
 		TimeTableEntry,
-		Finish
+		Finish,
+		FileChoice
 	}
 
 
